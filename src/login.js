@@ -8,22 +8,31 @@ import { useState } from 'react';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import firebase from 'firebase/compat/app';
+import Header from './header';
 
 function Login() {
     const [user, loading, error] = useAuthState(auth);
     
     if(loading){
-        <div style={{ backgroundImage: `url(${background})` }} className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
-            <h1>Loading...</h1>
-        </div>
+        return (
+            <>
+            <Header />
+            <div style={{ backgroundImage: `url(${background})` }} className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
+                <h1>Loading...</h1>
+            </div>
+            </>
+        );
     }
     if(user){
         return <Navigate to="/dashboard" replace />;
     }
     return (
-    <div style={{ backgroundImage: `url(${background})` }} className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
-        <LogIn/>
-    </div>
+        <>
+        <Header />
+            <div style={{ backgroundImage: `url(${background})` }} className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
+                <LogIn/>
+            </div>
+        </>
     );
     
 }
@@ -115,9 +124,4 @@ function LogIn(){
     );
 }
 
-function Logout(){
-    return auth.currentUser && (
-        <button onClick={() => auth.signOut()}>Sign Out</button>
-    );
-}
 export default Login;
