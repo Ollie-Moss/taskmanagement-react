@@ -1,43 +1,35 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
-import 'firebase/compat/auth';
+import { auth } from './firebase-config';
 import background from './bg.png';
 
-import { useAuthState, useSignInWithGoogle } from 'react-firebase-hooks/auth';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Navigate } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
+
 import { useState } from 'react';
 
-firebase.initializeApp({
-    apiKey: "***REMOVED***",
-    authDomain: "***REMOVED***",
-    projectId: "***REMOVED***",
-    storageBucket: "***REMOVED***.appspot.com",
-    messagingSenderId: "***REMOVED***",
-    appId: "1:***REMOVED***:web:***REMOVED***",
-    measurementId: "***REMOVED***"
-})
-
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+import { useAuthState } from 'react-firebase-hooks/auth';
+import firebase from 'firebase/compat/app';
 
 function Login() {
-    const [user] = useAuthState(auth);
-    return (
-        <>
+    const [user, loading, error] = useAuthState(auth);
+    
+    if(loading){
         <div style={{ backgroundImage: `url(${background})` }} className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
-            {user ? <LoggedIn /> : <LogIn />}
+            <h1>Loading...</h1>
         </div>
-        </>
+    }
+    if(user){
+        return <Navigate to="/dashboard" replace />;
+    }
+    return (
+    <div style={{ backgroundImage: `url(${background})` }} className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
+        <LogIn/>
+    </div>
     );
+    
 }
 
 function LoggedIn() {
-    return (
-        <div>
-            <Logout/>
-        </div>
-    );
+    redirect("dashboard");
 }
 
 function LogIn(){
