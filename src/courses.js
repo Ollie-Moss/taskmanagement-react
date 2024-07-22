@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { auth, firestore } from "./firebase-config";
-import { doc, getDoc, setDoc, collection, query } from "firebase/firestore";
+import { doc, setDoc, collection, query, deleteDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 
@@ -20,50 +20,53 @@ const Courses = () => {
         return (
             <>
             <Header />
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
+            <div className="bg-primary-600 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
                 <h1>Loading...</h1>
             </div>
             </>
         );
     }
     if(user && value){
-        console.log(value.docs);
         return (
             <>
             <Header />
-            <CourseDisplay courses={value.docs}/>
+            <div className="bg-primary-600 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
+                <CourseDisplay courses={value.docs}/>
+                <AddCourse user={user} />
+            </div>
             </>
         );
     }
     return (
+        <>
         <Header />
+        <div className="bg-primary-600 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
+            <h1> Login to add courses </h1>
+        </div>
+        </>
     )
 }
 
-const AddCourse = () => {
+const AddCourse = (props) => {
     const [courseName, setCourseName] = useState("");
     const [courseCode, setCourseCode] = useState("");
     const [courseDescription, setCourseDescription] = useState("");
 
     const addCourse = async (e) => {
         e.preventDefault();
-        let currentData = await getDoc(doc(firestore, "courses", auth.currentUser.uid));
-        if(!currentData.exists()){
-            console.log("No data");
-            return;
-        }
-        const docData = [{
+        const docData = {
             name: courseName,
             code: courseCode,
             description: courseDescription
-        }];
+        };
 
+        console.log(docData);
         try {
-            await setDoc(doc(firestore, "courses", auth.currentUser.uid), docData).then((result) => {
+            await setDoc(doc(firestore, `/users/${props.user.uid}/courses/`, docData.code), docData).then((result) => {
                 console.log(result);
             })
         }catch(error) {
-            console.log(error.value);
+            console.log(error);
         }
     }
     return (
@@ -104,12 +107,39 @@ const CourseDisplay = (props) => {
     ))
 };
 const CourseCard = (props) => {
+    const [dropDown, setDropDown] = useState(false);
+
+    const deleteCourse = () => {
+        deleteDoc(doc(firestore, `/users/${auth.currentUser.uid}/courses`, props.data.code))
+            .then((result) => {
+                console.log(result);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
     return (
+        dropDown ?
+        <>
+        <div> 
+            <button onClick={() => setDropDown(!dropDown)} >{props.data.code}</button>
+            <button className="text-red-600"onClick={() => deleteCourse()}> 
+            <svg className="h-8 w-8 text-red-500"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
+            </button>
+        </div>
         <ul>
             <li>Name: {props.data.name}</li>
             <li>Code: {props.data.code}</li>
             <li>Description: {props.data.description}</li>
         </ul>
+        </>
+        :
+        <div className="flex justify-center"> 
+            <button onClick={() => setDropDown(!dropDown)} >{props.data.code}</button>
+            <button onClick={() => deleteCourse()}> 
+            <svg className="h-8 w-8 text-red-500"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
+            </button>
+        </div>
     )
 };
 
