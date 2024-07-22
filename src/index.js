@@ -7,6 +7,7 @@ import Dashboard from './dashboard';
 import Courses from './courses';
 import Assignments from './assignments';
 import Login from './login';
+import Signup from './signup';
 
 import {
     createBrowserRouter,
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
     {
         path: "assignments",
         element: <Assignments />,
+    },
+    {
+        path: "signup",
+        element: <Signup />,
     },
 ]);
 const root = ReactDOM.createRoot(document.getElementById('root'));

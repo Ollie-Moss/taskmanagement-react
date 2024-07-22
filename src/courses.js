@@ -27,6 +27,7 @@ const Courses = () => {
         );
     }
     if(user && value){
+        console.log(user);
         return (
             <>
             <Header />
