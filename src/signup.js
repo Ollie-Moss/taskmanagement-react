@@ -81,7 +81,7 @@ function SignupForm(){
         });
     };
     return (
-        <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
+        <div className="mt-40 w-full bg-white rounded-lg shadow sm:max-w-md xl:p-0">
             <h1 className="text-3xl mt-4 block mb-2 text-center font-bold text-black">Sign Up</h1>
             <div className='space-y-1'>
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -123,7 +123,7 @@ function SignupForm(){
                                         />
                         </label>
                         <button className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" 
-                        onClick={signupWithEmailAndPass}>Login In</button>
+                        onClick={signupWithEmailAndPass}>Sign up</button>
                 </div>
             </div>
         </div>
