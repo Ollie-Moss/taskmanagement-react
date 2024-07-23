@@ -27,13 +27,12 @@ const Courses = () => {
         );
     }
     if(user && value){
-        console.log(user);
         return (
             <>
             <Header />
             <div className="bg-primary-600 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
-                <CourseDisplay courses={value.docs}/>
                 <AddCourse user={user} />
+                <CourseDisplay courses={value.docs}/>
             </div>
             </>
         );
@@ -122,20 +121,20 @@ const CourseCard = (props) => {
     return (
         dropDown ?
         <>
-        <div> 
+        <div className="flex justify-between w-full bg-white rounded p-2 mt-2"> 
             <button onClick={() => setDropDown(!dropDown)} >{props.data.code}</button>
-            <button className="text-red-600"onClick={() => deleteCourse()}> 
+            <button onClick={() => deleteCourse()}> 
             <svg className="h-8 w-8 text-red-500"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
             </button>
         </div>
-        <ul>
+        <ul className="bg-white w-full rounded">
             <li>Name: {props.data.name}</li>
             <li>Code: {props.data.code}</li>
             <li>Description: {props.data.description}</li>
         </ul>
         </>
         :
-        <div className="flex justify-center"> 
+        <div className="flex justify-between w-full bg-white rounded p-2 mt-2"> 
             <button onClick={() => setDropDown(!dropDown)} >{props.data.code}</button>
             <button onClick={() => deleteCourse()}> 
             <svg className="h-8 w-8 text-red-500"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>

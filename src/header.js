@@ -1,25 +1,49 @@
 import { auth } from './firebase-config';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useState } from 'react';
 
 const Header = () => {
-
+    const [dropDown, setDropDown] = useState(false);
     return (
-        <header className="fixed top-0 w-full bg-primary-600" >
-            <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
-                <div>
-                    <a className="lg:pr-40 sm:pr-20 text-lg font-bold text-white" href="#">Logo</a>
-                </div>
-                <div>
-                    <div className="md:space-x-20 sm:space-x-10 flex items-center justify-center">
-                        <a className="text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
-                        <a className="text-lg font-bold text-white hover:text-primary-200" href="/courses">Courses</a>
-                        <a className="text-lg font-bold text-white hover:text-primary-200" href="/assignments">Assignments</a>
+        <>
+        <header className="z-40 fixed top-0 w-full bg-primary-600" >
+            <nav>
+                <div className='hidden md:flex lg:flex mx-auto max-w-7xl items-center justify-between p-6 lg:px-8'>
+                    <div>
+                        <a className="lg:pr-40 sm:pr-20 text-lg font-bold text-white" href="#">Logo</a>
                     </div>
-                </div>
+                    <div>
+                        <div className="md:space-x-20 sm:space-x-10 flex items-center justify-center">
+                            <a className="text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
+                            <a className="text-lg font-bold text-white hover:text-primary-200" href="/courses">Courses</a>
+                            <a className="text-lg font-bold text-white hover:text-primary-200" href="/assignments">Assignments</a>
+                        </div>
+                    </div>
 
-                <Profile />
+                    <Profile />
+                </div>
+                <div className='flex sm:flex md:hidden lg:hidden justify-between p-6'>
+                    <button onClick={() => setDropDown(!dropDown)}>
+                    <svg className="h-8 w-8 text-white"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                    </svg>
+                    </button>
+                    <Profile />
+                </div>
+                {dropDown ?
+                    <div className='bg-primary-700 flex sm:flex md:hidden lg:hidden flex-col items-start p-4'>
+                    <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
+                    <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/courses">Courses</a>
+                    <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/assignments">Assignments</a>
+                    </div>
+                :
+                <></>
+                }
             </nav>
         </header>
+        <div className='h-20 sm:h-20 md:h-0 lg:h-0'>
+        </div>
+        </>
     )
 }
 
