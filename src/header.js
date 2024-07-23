@@ -41,7 +41,7 @@ const Header = () => {
                 }
             </nav>
         </header>
-        <div className='h-20 sm:h-20 md:h-0 lg:h-0'>
+        <div className='bg-primary-600 h-20 sm:h-20 md:h-28 lg:h-28'>
         </div>
         </>
     )

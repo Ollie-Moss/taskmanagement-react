@@ -30,9 +30,8 @@ const Courses = () => {
         return (
             <>
             <Header />
-            <div className="bg-primary-600 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
-                <AddCourse user={user} />
-                <CourseDisplay courses={value.docs}/>
+            <div className="bg-primary-600 flex flex-col px-6 py-8 mx-auto md:h-screen lg:py-0"> 
+            <CourseDisplay user={user} courses={value.docs}/>
             </div>
             </>
         );
@@ -51,6 +50,11 @@ const AddCourse = (props) => {
     const [courseName, setCourseName] = useState("");
     const [courseCode, setCourseCode] = useState("");
     const [courseDescription, setCourseDescription] = useState("");
+    const cancel = (e) => {
+        e.preventDefault();
+        props.cancel();
+        return;
+    }
 
     const addCourse = async (e) => {
         e.preventDefault();
@@ -68,9 +72,11 @@ const AddCourse = (props) => {
         }catch(error) {
             console.log(error);
         }
+        props.cancel();
     }
     return (
-        <form onSubmit={addCourse}>
+        <form className='rounded p-10 bg-white absolute left-1/4 x-1/2 w-1/2 mr-10' >
+            <h1 className="text-3xl font-bold"> New Course </h1>
             <label>
                 Name: <input 
                         className="border border-gray-300 text-black rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
@@ -92,19 +98,51 @@ const AddCourse = (props) => {
                         onChange={e => setCourseDescription(e.target.value)}
                         />
             </label>
-            <input 
+            <button
                 className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-between mr-2 mb-2"
-                type="submit" 
-                value="Add Course" />
+                onClick={addCourse}
+            >
+                Add Course
+            </button>
+            <button
+                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-between mr-2 mb-2"
+                onClick={cancel}
+            >
+                Cancel
+            </button>
 
         </form>
     )
 };
 
 const CourseDisplay = (props) => {
-    return props.courses.map((item, index) => (
-        <CourseCard key={item.data().code} data={item.data()}/>
-    ))
+    const [addCourse, setAddCourse] = useState(false);
+    const cancelCourse = () => {
+        setAddCourse(false);
+    }
+
+    return (
+        <div className="p-2 bg-primary-800 rounded">
+            {addCourse ?
+                <AddCourse cancel={cancelCourse} user={props.user}/>
+            :
+                <>
+                </>
+            }
+            <div className="flex items-center justify-between">
+                <h1 className="rounded bg-primary-800 p-2 text-white text-xl font-bold"> Courses </h1>
+                <button 
+                    className="text-primary-600 bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2 text-center"
+                    onClick={() => setAddCourse(true)}
+                >
+                    Add Course
+                </button>
+            </div>
+            {props.courses.map((item, index) => (
+            <CourseCard key={item.data().code} data={item.data()}/>
+            ))}
+        </div>
+    )
 };
 const CourseCard = (props) => {
     const [dropDown, setDropDown] = useState(false);
@@ -121,7 +159,7 @@ const CourseCard = (props) => {
     return (
         dropDown ?
         <>
-        <div className="flex justify-between w-full bg-white rounded p-2 mt-2"> 
+        <div className="text-primary-600 font-bold flex justify-between w-full bg-white rounded p-2 mt-2"> 
             <button onClick={() => setDropDown(!dropDown)} >{props.data.code}</button>
             <button onClick={() => deleteCourse()}> 
             <svg className="h-8 w-8 text-red-500"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
@@ -134,7 +172,7 @@ const CourseCard = (props) => {
         </ul>
         </>
         :
-        <div className="flex justify-between w-full bg-white rounded p-2 mt-2"> 
+        <div className="text-primary-600 font-bold flex justify-between w-full bg-white rounded p-2 mt-2"> 
             <button onClick={() => setDropDown(!dropDown)} >{props.data.code}</button>
             <button onClick={() => deleteCourse()}> 
             <svg className="h-8 w-8 text-red-500"  width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
