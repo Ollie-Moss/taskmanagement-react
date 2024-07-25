@@ -1,8 +1,6 @@
 import { auth } from './firebase-config';
-import background from './bg.png';
 
 import { Navigate } from 'react-router-dom';
-import { redirect } from 'react-router-dom';
 
 import { useState } from 'react';
 
@@ -11,7 +9,7 @@ import { updateProfile } from 'firebase/auth';
 import Header from './header';
 
 function Signup() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
     
     if(loading){
         return (
@@ -29,7 +27,7 @@ function Signup() {
     return (
         <>
         <Header />
-            <div className="bg-primary-600 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
+            <div className="bg-primary-600 flex flex-col items-center justify-start px-6 mx-auto md:h-screen lg:py-0"> 
                 <SignupForm />
             </div>
         </>
@@ -46,7 +44,7 @@ function SignupForm(){
     const [error, setError] = useState('');
 
     const signupWithEmailAndPass = () => {
-        if(password != passwordConfirm){
+        if(password !== passwordConfirm){
             setError("Passwords must match!");
             return;
         }
@@ -81,10 +79,10 @@ function SignupForm(){
         });
     };
     return (
-        <div className="mt-40 w-full bg-white rounded-lg shadow sm:max-w-md xl:p-0">
-            <h1 className="text-3xl mt-4 block mb-2 text-center font-bold text-black">Sign Up</h1>
+        <div className="w-full bg-white rounded-lg shadow sm:max-w-md xl:p-0">
+            <h1 className="text-3xl mt-4 block text-center font-bold text-black">Sign Up</h1>
             <div className='space-y-1'>
-                <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                <div className="py-2 pb-5 space-y-4 md:space-y-6 px-8">
                     <p className='text-center text-red-600'>{error}</p>
                         <label className="block mb-2 text-sm font-medium text-black">
                             First Name: <input 

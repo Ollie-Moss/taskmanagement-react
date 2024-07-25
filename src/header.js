@@ -6,14 +6,14 @@ const Header = () => {
     const [dropDown, setDropDown] = useState(false);
     return (
         <>
-        <header className="z-40 fixed top-0 w-full bg-primary-600" >
+        <header className="z-10 fixed top-0 w-full bg-primary-600" >
             <nav>
                 <div className='hidden md:flex lg:flex mx-auto max-w-7xl items-center justify-between p-6 lg:px-8'>
                     <div>
                         <a className="lg:pr-40 sm:pr-20 text-lg font-bold text-white" href="#">Logo</a>
                     </div>
-                    <div>
-                        <div className="md:space-x-20 sm:space-x-10 flex items-center justify-center">
+                    <div className="left-1/4 w-1/2 fixed">
+                        <div className="lg:space-x-20 md:space-x-5 flex items-center justify-center">
                             <a className="text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
                             <a className="text-lg font-bold text-white hover:text-primary-200" href="/courses">Courses</a>
                             <a className="text-lg font-bold text-white hover:text-primary-200" href="/assignments">Assignments</a>
@@ -31,7 +31,7 @@ const Header = () => {
                     <Profile />
                 </div>
                 {dropDown ?
-                    <div className='bg-primary-700 flex sm:flex md:hidden lg:hidden flex-col items-start p-4'>
+                    <div className='bg-primary-700 flex sm:flex md:hidden lg:hidden flex-col items-start'>
                     <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
                     <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/courses">Courses</a>
                     <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/assignments">Assignments</a>
@@ -41,7 +41,7 @@ const Header = () => {
                 }
             </nav>
         </header>
-        <div className='bg-primary-600 h-20 sm:h-20 md:h-28 lg:h-28'>
+        <div className='bg-primary-600 h-24 sm:h-20 md:h-28 lg:h-28'>
         </div>
         </>
     )
