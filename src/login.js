@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import firebase from 'firebase/compat/app';
-import { setPersistence, browserSessionPersistence, browserLocalPersistence } from "firebase/auth";
+import { setPersistence, browserSessionPersistence, browserLocalPersistence, signInWithRedirect } from "firebase/auth";
 import Header from './header';
 
 function Login() {
@@ -98,7 +98,7 @@ function LogIn(){
             <p className='text-center text-red-600'>{error}</p>
                 <label className="block mb-2 text-sm font-medium text-black">
                     Email: <input 
-                            className="backdrop-blur-md backdrop-saturate-200 bg-white/10 border border-gray-300 text-black rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="example@gmail.com"
+                            className="backdrop-blur-md backdrop-saturate-200 bg-white/10 border border-gray-300 text-black rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="user@example.com"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
                             />

@@ -5,7 +5,7 @@ const PercentageBar = (props) => {
     }
     let content = `after:content-['${props.percent}%']`
     return (
-        <div className={`relative rounded-full h-6 w-full bg-white`}> 
+        <div className={`text-left relative rounded-full h-6 w-full bg-white`}> 
             <div style={{width: "100%"}} className={`w-full absolute overflow-hidden text-primary-500 rounded-full bg-white`}>
                 <p className={`pl-3 font-bold`}>{props.percent}%</p>
             </div>

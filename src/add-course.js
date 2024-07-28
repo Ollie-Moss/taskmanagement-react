@@ -21,6 +21,16 @@ const AddCourse = (props) => {
             description: courseDescription,
             completion: 5,
             assignments: [
+                //{
+                //    name: "Assignement 1",
+                //    type: "Project",
+                //    completion: 80
+                //},
+                //{
+                //    name: "Assignment 2",
+                //    type: "Test",
+                //    completion: 20
+                //}
             ]
         };
 
@@ -34,6 +44,8 @@ const AddCourse = (props) => {
         }
     }
     return (
+        <>
+        <div className="backdrop-blur-sm fixed z-20 top-0 left-0 w-full h-full"></div>
         <form style={{width: "80%", left: "10%"}} className="z-30 rounded p-10 bg-white absolute">
             <h1 className="text-3xl font-bold"> New Course </h1>
             <label className="block">
@@ -71,6 +83,7 @@ const AddCourse = (props) => {
             </button>
 
         </form>
+        </>
     )
 };
 

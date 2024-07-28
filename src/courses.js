@@ -62,7 +62,6 @@ const CourseDisplay = (props) => {
             {addCourse ?
                 <>
                 <AddCourse close={closeCourse} user={props.user}/>
-                <div className="backdrop-blur-sm fixed z-20 top-0 left-0 w-full h-full"></div>
                 </>
             :
                 <>
@@ -71,7 +70,7 @@ const CourseDisplay = (props) => {
             <div className="flex items-center justify-between">
                 <h1 className="rounded bg-primary-800 p-2 text-white text-xl font-bold"> Courses </h1>
                 <button 
-                    className="text-primary-600 bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2 text-center"
+                    className="text-primary-600 bg-white hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-primary-300 font-bold rounded-lg text-sm px-5 py-2 text-center"
                     onClick={() => {
                         setAddCourse(true);
                     }}
