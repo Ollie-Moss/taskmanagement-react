@@ -1,12 +1,16 @@
 const PercentageBar = (props) => {
     let colors = props.colors;
     if (!props.colors){
-        colors = ["primary-500", "white", "white"] ;
+        colors = ["bg-primary-500", "bg-white", "text-white"] ;
     }
+    let content = `after:content-['${props.percent}%']`
     return (
-        <div className={`rounded-full w-full bg-${colors[1]}`}> 
-            <div style={{width: props.percent + "%"}} className={`-m-[1px] rounded-full h-full bg-${colors[0]}`}>
-                <p className={`pl-3 font-bold text-${colors[2]}`}>{props.percent}%</p>
+        <div className={`relative rounded-full h-6 w-full bg-white`}> 
+            <div style={{width: "100%"}} className={`w-full absolute overflow-hidden text-primary-500 rounded-full bg-white`}>
+                <p className={`pl-3 font-bold`}>{props.percent}%</p>
+            </div>
+            <div style={{width: props.percent + "%"}} className={`-ml-[1px] absolute text-white overflow-hidden rounded-full ${colors[0]}`}>
+                <p className={`pl-3 font-bold`}>{props.percent}%</p>
             </div>
         </div>
     );

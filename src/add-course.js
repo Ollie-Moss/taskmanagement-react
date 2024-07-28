@@ -19,14 +19,8 @@ const AddCourse = (props) => {
             name: courseName,
             code: courseCode,
             description: courseDescription,
-            completion: 20,
+            completion: 5,
             assignments: [
-                {
-                    name: "Assignment 1",
-                    type: "Project",
-                    completion: 85
-                }
-
             ]
         };
 
@@ -40,25 +34,25 @@ const AddCourse = (props) => {
         }
     }
     return (
-        <form className='z-30 rounded p-10 bg-white absolute left-1/4 x-1/2 w-1/2 mr-10' >
+        <form style={{width: "80%", left: "10%"}} className="z-30 rounded p-10 bg-white absolute">
             <h1 className="text-3xl font-bold"> New Course </h1>
-            <label>
+            <label className="block">
                 Name: <input 
-                        className="border border-gray-300 text-black rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
+                        className="border border-gray-300 text-black rounded-lg inline my-2.5" 
                         value={courseName}
                         onChange={e => setCourseName(e.target.value)}
                         />
             </label>
-            <label>
+            <label className="block">
                 Code: <input 
-                        className="border border-gray-300 text-black rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
+                        className="border border-gray-300 text-black rounded-lg inline my-2.5" 
                         value={courseCode}
                         onChange={e => setCourseCode(e.target.value)}
                         />
             </label>
-            <label>
+            <label className="block">
                 Description: <input 
-                        className="border border-gray-300 text-black rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" 
+                        className="overflow-scroll border border-gray-300 text-black rounded-lg block my-2.5" 
                         value={courseDescription}
                         onChange={e => setCourseDescription(e.target.value)}
                         />

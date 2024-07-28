@@ -1,6 +1,6 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { auth } from "./firebase-config";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { firestore } from "./firebase-config";
 import PercentageBar from "./percentage-bar";
 
@@ -16,10 +16,10 @@ const CourseCard = (props) => {
                 console.log(error);
             })
     }
-
     const edit = () => {
         
     }
+
     return (
         <>
         <div className={`text-primary-600 font-bold flex justify-between w-full bg-white ${dropDown ? "rounded-t" : "rounded"} p-2 mt-2`}> 
@@ -33,30 +33,32 @@ const CourseCard = (props) => {
                 </button>
             </div>
         </div>
-        {dropDown ?
-            <CourseDetails data={props.data}/>
-        :
-        <>
-        </>
-        }
+        <CourseDetails open={dropDown} data={props.data}/>
         </>
     )
 };
 
 const CourseDetails = (props) => {
+
+    let animation = props.open ? "animate-slidedown" : "animate-slideup"
+
     return (
-        <div className="pb-5 flex justify-between bg-gray-200 rounded-b">
-            <div className="ml-10 my-5 w-full">
-                <h1 className="py-2 text-2xl font-bold text-primary-600"> {props.data.name} </h1>
-                <p className="text-sm font-medium text-primary-600"> {props.data.description} </p>
-                <h1 className="pt-3 pb-2 text-xl font-bold text-primary-600"> Total Completion: </h1>
-                <PercentageBar percent={props.data.completion} />
-            </div>
-            <div className="rounded-lg mx-10 my-5 w-full bg-white">
-                <h1 className="px-5 py-4 text-xl font-bold text-primary-600"> Assignments: {props.data.assignments.length}</h1>
-                {props.data.assignments.map((item, index) => ( 
-                    <AssignmentCard key={index} data={item} />
-                ))}
+        <div className={`${animation} grid grid-rows-0`}>
+            <div className="overflow-hidden">
+                <div className={`flex pb-5 justify-between bg-gray-200 rounded-b`}>
+                    <div className="ml-10 my-5 w-full">
+                        <h1 className="py-2 text-2xl font-bold text-primary-600"> {props.data.name} </h1>
+                        <p className="text-sm font-medium text-primary-600"> {props.data.description} </p>
+                        <h1 className="pt-3 pb-2 text-xl font-bold text-primary-600"> Total Completion: </h1>
+                        <PercentageBar percent={props.data.completion} />
+                    </div>
+                    <div className="rounded-lg mx-10 my-5 w-full bg-white">
+                        <h1 className="px-5 py-4 text-xl font-bold text-primary-600"> Assignments: {props.data.assignments.length}</h1>
+                        {props.data.assignments.map((item, index) => ( 
+                            <AssignmentCard key={index} data={item} />
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     )
@@ -71,7 +73,7 @@ const AssignmentCard = (props) => {
                     <a > More </a>
                 </button>
             </div>
-            <PercentageBar colors={["primary-500", "white", "white"]}percent={props.data.completion} />
+            <PercentageBar percent={props.data.completion} />
         </div>
     )
 };

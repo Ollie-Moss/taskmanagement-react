@@ -23,7 +23,7 @@ const Courses = () => {
         return (
             <>
             <Header />
-            <div className="bg-primary-600 flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"> 
+            <div className="bg-primary-600 flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0"> 
                 <h1>Loading...</h1>
             </div>
             </>
@@ -42,7 +42,7 @@ const Courses = () => {
     return (
         <>
         <Header />
-        <div className="h-screen bg-primary-600 flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0"> 
+        <div className="h-screen bg-primary-600 flex flex-col items-center justify-center px-6 py-8 lg:py-0"> 
             <h1> Login to add courses </h1>
         </div>
         </>

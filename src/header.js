@@ -30,15 +30,15 @@ const Header = () => {
                     </button>
                     <Profile />
                 </div>
-                {dropDown ?
-                    <div className='bg-primary-700 flex sm:flex md:hidden lg:hidden flex-col items-start'>
-                    <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
-                    <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/courses">Courses</a>
-                    <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/assignments">Assignments</a>
+                <div className={`${dropDown ? 'animate-slidedown' : 'animate-slideup'} grid grid-cols-0`}>
+                    <div className="overflow-hidden">
+                        <div className='bg-primary-700 flex sm:flex md:hidden lg:hidden flex-col items-start'>
+                            <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
+                            <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/courses">Courses</a>
+                            <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/assignments">Assignments</a>
+                        </div>
                     </div>
-                :
-                <></>
-                }
+                </div>
             </nav>
         </header>
         <div className='bg-primary-600 h-24 sm:h-20 md:h-28 lg:h-28'>
