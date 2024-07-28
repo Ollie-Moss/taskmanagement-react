@@ -5,7 +5,7 @@ import { firestore } from "./firebase-config";
 import PercentageBar from "./percentage-bar";
 
 const CourseCard = (props) => {
-    const [dropDown, setDropDown] = useState(false);
+    const [dropDown, setDropDown] = useState(null);
 
     const deleteCourse = () => {
         deleteDoc(doc(firestore, `/users/${auth.currentUser.uid}/courses`, props.data.code))
@@ -33,14 +33,38 @@ const CourseCard = (props) => {
                 </button>
             </div>
         </div>
-        <CourseDetails open={dropDown} data={props.data}/>
+        <CourseEdit open={dropDown} data={props.data}/>
         </>
     )
 };
 
-const CourseDetails = (props) => {
+const CourseEdit = (props) => {
+    let animation = props.open == null ? "hidden" : props.open ? "animate-slidedown" : "animate-slideup"
 
-    let animation = props.open ? "animate-slidedown" : "animate-slideup"
+    return (
+        <div className={`${animation} grid grid-rows-0`}>
+            <div className="overflow-hidden">
+                <div className={`flex pb-5 justify-between bg-gray-200 rounded-b`}>
+                    <div className="ml-10 my-5 w-full">
+                        <h1 className="py-2 text-2xl font-bold text-primary-600"> {props.data.name} </h1>
+                        <span contentEditable="plaintext-only" className="max-w-ma text-sm font-medium text-primary-600"> {props.data.description} </span>
+                        <h1 className="pt-3 pb-2 text-xl font-bold text-primary-600"> Total Completion: </h1>
+                        <PercentageBar percent={props.data.completion} />
+                    </div>
+                    <div className="rounded-lg mx-10 my-5 w-full bg-white">
+                        <h1 className="px-5 py-4 text-xl font-bold text-primary-600"> Assignments: {props.data.assignments.length}</h1>
+                        {props.data.assignments.map((item, index) => ( 
+                            <AssignmentCard key={index} data={item} />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+};
+
+const CourseDetails = (props) => {
+    let animation = props.open == null ? "hidden" : props.open ? "animate-slidedown" : "animate-slideup"
 
     return (
         <div className={`${animation} grid grid-rows-0`}>
