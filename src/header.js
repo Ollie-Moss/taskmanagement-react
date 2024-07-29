@@ -10,13 +10,13 @@ const Header = () => {
             <nav>
                 <div className='hidden md:flex lg:flex mx-auto max-w-7xl items-center justify-between p-6 lg:px-8'>
                     <div>
-                        <a className="lg:pr-40 sm:pr-20 text-lg font-bold text-white" href="#">Logo</a>
+                        <a className="lg:pr-40 sm:pr-20 text-lg font-bold text-accent-600" href="#">Logo</a>
                     </div>
                     <div className="left-1/4 w-1/2 fixed">
-                        <div className="lg:space-x-20 md:space-x-5 flex items-center justify-center">
-                            <a className="text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
-                            <a className="text-lg font-bold text-white hover:text-primary-200" href="/courses">Courses</a>
-                            <a className="text-lg font-bold text-white hover:text-primary-200" href="/assignments">Assignments</a>
+                        <div className="lg:space-x-16 md:space-x-5 flex items-center justify-center">
+                            <a className="text-lg font-bold text-accent-600 hover:text-accent-700" href="/dashboard">Dashboard</a>
+                            <a className="text-lg font-bold text-accent-600 hover:text-accent-700" href="/courses">Courses</a>
+                            <a className="text-lg font-bold text-accent-600 hover:text-accent-700" href="/assignments">Assignments</a>
                         </div>
                     </div>
 
@@ -24,7 +24,7 @@ const Header = () => {
                 </div>
                 <div className='flex sm:flex md:hidden lg:hidden justify-between p-6'>
                     <button onClick={() => setDropDown(!dropDown)}>
-                    <svg className="h-8 w-8 text-white"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-8 w-8 text-accent-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                     </svg>
                     </button>
@@ -32,10 +32,10 @@ const Header = () => {
                 </div>
                 <div className={`${dropDown == null ? "hidden" : dropDown ? 'animate-slidedown' : 'animate-slideup'} grid grid-cols-0`}>
                     <div className="overflow-hidden">
-                        <div className='bg-primary-700 flex sm:flex md:hidden lg:hidden flex-col items-start'>
-                            <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
-                            <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/courses">Courses</a>
-                            <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/assignments">Assignments</a>
+                        <div className='bg-primary-650 flex sm:flex md:hidden lg:hidden flex-col items-start'>
+                            <a className="w-full hover:bg-primary-700 rounded p-4 block text-lg font-bold text-accent-600 hover:text-accent-700" href="/dashboard">Dashboard</a>
+                            <a className="w-full hover:bg-primary-700 rounded p-4 block text-lg font-bold text-accent-600 hover:text-accent-700" href="/courses">Courses</a>
+                            <a className="w-full hover:bg-primary-700 rounded p-4 block text-lg font-bold text-accent-600 hover:text-accent-700" href="/assignments">Assignments</a>
                         </div>
                     </div>
                 </div>
@@ -52,18 +52,18 @@ const Profile = () => {
     return (
         loading ?
         <div>
-            <a className="text-lg font-bold text-white hover:text-primary-200">...</a>
+            <a className="text-lg font-bold text-accent-600 hover:text-primary-200">...</a>
         </div>
         :
         user ? 
         <Logout />
         :
-        <div>
-            <button className='px-3 py-1 rounded-md border-white border-2 border-solid text-lg font-bold text-white hover:text-primary-600 hover:bg-white inline'> 
+        <div className='relative z-20'>
+            <button className='px-3 py-1 rounded-md border-gray-200 border-2 border-solid text-lg font-bold text-accent-600 hover:text-accent-700 hover:bg-gray-200 inline'> 
                 <a href='/auth'> Login </a>
             </button>
-            <p className='px-2 text-lg font-bold text-white inline'> or </p>
-            <button className='px-3 py-1 rounded-md border-white border-2 border-solid bg-white text-lg font-bold text-primary-600 hover:text-white hover:bg-primary-600 inline'> 
+            <p className='px-2 text-lg font-bold text-accent-600 inline'> or </p>
+            <button className='px-3 py-1 rounded-md border-white border-2 border-solid bg-white text-lg font-bold text-accent-600 hover:text-accent-600 hover:bg-primary-600 inline'> 
                 <a href='/signup'> Sign Up </a>
             </button>
         </div>
@@ -71,7 +71,7 @@ const Profile = () => {
 }
 const Logout = () => {
     return auth.currentUser && (
-        <button onClick={() => auth.signOut()} className='px-3 py-1 rounded-md border-white border-2 border-solid text-lg font-bold text-white hover:text-primary-600 hover:bg-white inline'> 
+        <button onClick={() => auth.signOut()} className='px-3 py-1 rounded-md border-gray-200 border-2 border-solid text-lg font-bold text-accent-600 hover:text-accent-700 hover:bg-gray-200 inline'> 
             <a > Sign Out </a>
         </button>
     );
