@@ -3,7 +3,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useState } from 'react';
 
 const Header = () => {
-    const [dropDown, setDropDown] = useState(false);
+    const [dropDown, setDropDown] = useState(null);
     return (
         <>
         <header className="z-10 fixed top-0 w-full bg-primary-600" >
@@ -30,7 +30,7 @@ const Header = () => {
                     </button>
                     <Profile />
                 </div>
-                <div className={`${dropDown ? 'animate-slidedown' : 'animate-slideup'} grid grid-cols-0`}>
+                <div className={`${dropDown == null ? "hidden" : dropDown ? 'animate-slidedown' : 'animate-slideup'} grid grid-cols-0`}>
                     <div className="overflow-hidden">
                         <div className='bg-primary-700 flex sm:flex md:hidden lg:hidden flex-col items-start'>
                             <a className="w-full hover:bg-primary-800 rounded p-4 block text-lg font-bold text-white hover:text-primary-200" href="/dashboard">Dashboard</a>
