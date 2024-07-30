@@ -49,6 +49,10 @@ module.exports = {
                 "slideup": "slideup 0.25s ease-in-out forwards"
             },
             colors: {
+                'gray': {
+                    "350": "#c6cbd2",
+                    "375": "#b8bec7"
+                },
                 'old-primary': {
                     "50":"#eef2ff",
                     "100":"#e0e7ff",

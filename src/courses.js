@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { auth, firestore } from "./firebase-config";
-import { collection, query, doc, setDoc } from "firebase/firestore";
+import { collection, query, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 
@@ -11,7 +11,6 @@ import { v4 as uuidv4 } from "uuid";
 
 const Courses = () => {
     const [user, loading, error] = useAuthState(auth);
-    const [tempCourses, setTempCourses] = useState([])
 
     const [value, dataLoading, dataError] = useCollection(user && query(
         collection(firestore, `/users/${user.uid}/courses`), {
@@ -38,11 +37,8 @@ const Courses = () => {
             <div className="bg-primary-600 px-6 py-8 h-full lg:py-0"> 
             <CourseDisplay 
                 user={user} 
-                tempCourses={tempCourses} 
-                setTempCourses={setTempCourses} 
                 courses={value.docs
-                    .map((item) => item.data())
-                    .sort((a, b) => a.index - b.index)}/>
+                    .map((item) => item.data())} />
             </div>
             </>
         );
@@ -58,7 +54,6 @@ const Courses = () => {
 }
 
 const CourseDisplay = (props) => {
-    // sort list based off index biggest to smallest
 
     const createCourse = async () => {
 
@@ -69,15 +64,39 @@ const CourseDisplay = (props) => {
         const docData = {
             id: uuidv4(),
             index: newIndex,
-            name: "Enter name... ",
-            code: "Enter code..",
-            description: "Enter description...",
+            name: "",
+            code: "",
+            description: "",
             completion: 0,
             assignments: [
-            ]
+            ],
+            draft: true
         };
-        props.setTempCourses(prev => [...prev, docData]);
-        //setSortedCourses([...sortedCourses, docData]);
+
+        try {
+            await setDoc(doc(firestore, `/users/${props.user.uid}/courses/`, docData.id), docData).then((result) => {
+            })
+        }catch(error) {
+            console.log(error);
+        }
+    }
+    const DeleteCourse = (id) => {
+            deleteDoc(doc(firestore, `/users/${auth.currentUser.uid}/courses`, id))
+                .then((result) => {
+                    console.log(result);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+    }
+
+    const UpdateCourse = async (newValue) => {
+        try {
+            await setDoc(doc(firestore, `/users/${props.user.uid}/courses/`, newValue.id), newValue).then((result) => {
+            })
+        }catch(error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -94,12 +113,11 @@ const CourseDisplay = (props) => {
                     Add Course
                 </button>
             </div>
-            {props.tempCourses.map((item) => (
-            <CourseCard key={item.id} temp={true} data={item}/>
-            ))}
-            {props.courses.map((item) => (
-            <CourseCard key={item.id} temp={false} data={item}/>
-            ))}
+            {props.courses
+                .map((item) => (
+                    <CourseCard key={item.id} DeleteCourse={DeleteCourse} UpdateCourse={UpdateCourse} data={item}/>
+            ))
+            }
         </div>
         </>
     )
