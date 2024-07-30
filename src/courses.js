@@ -1,18 +1,16 @@
-import { useState } from "react";
 import { auth, firestore } from "./firebase-config";
 import { collection, query, doc, setDoc, deleteDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 
-import AddCourse from "./add-course.js";
 import CourseCard from "./course-card.js";
 import Header from "./header";
 import { v4 as uuidv4 } from "uuid";
 
 const Courses = () => {
-    const [user, loading, error] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
 
-    const [value, dataLoading, dataError] = useCollection(user && query(
+    const [value, dataLoading] = useCollection(user && query(
         collection(firestore, `/users/${user.uid}/courses`), {
             snapshotListenOptions : {
                 includeMetadataChanges : true
@@ -20,7 +18,15 @@ const Courses = () => {
         }
     ));
 
-    if(loading || dataLoading){
+    const [assignments, assignmentsLoading] = useCollection(user && query(
+        collection(firestore, `/users/${user.uid}/assignments`), {
+            snapshotListenOptions : {
+                includeMetadataChanges : true
+            }
+        }
+    ));
+
+    if(loading || dataLoading || assignmentsLoading){
         return (
             <>
             <Header />
@@ -30,7 +36,7 @@ const Courses = () => {
             </>
         );
     }
-    if(user && value){
+    if(user && value && assignments){
         return (
             <>
             <Header />
@@ -38,7 +44,10 @@ const Courses = () => {
             <CourseDisplay 
                 user={user} 
                 courses={value.docs
+                    .map((item) => item.data())} 
+                assignments={assignments.docs
                     .map((item) => item.data())} />
+                
             </div>
             </>
         );
@@ -68,8 +77,6 @@ const CourseDisplay = (props) => {
             code: "",
             description: "",
             completion: 0,
-            assignments: [
-            ],
             draft: true
         };
 
@@ -115,9 +122,14 @@ const CourseDisplay = (props) => {
             </div>
             {props.courses
                 .map((item) => (
-                    <CourseCard key={item.id} DeleteCourse={DeleteCourse} UpdateCourse={UpdateCourse} data={item}/>
-            ))
-            }
+                    <CourseCard 
+                    key={item.id}
+                    DeleteCourse={DeleteCourse} 
+                    UpdateCourse={UpdateCourse} 
+                    assignments={props.assignments
+                            .filter((assignment) => assignment.courseId == item.id)}  
+                    data={item}/>
+            ))}
         </div>
         </>
     )

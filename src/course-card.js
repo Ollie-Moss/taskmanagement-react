@@ -81,10 +81,11 @@ const CourseCard = (props) => {
                 </>
             }
        </div>
+        {console.log(props.assignments)}
         {state.edit ? 
-            <CourseEdit Cancel={Cancel} Save={Save} state={state} data={props.data}/>
+            <CourseEdit Cancel={Cancel} Save={Save} state={state} assignments={props.assignments} data={props.data}/>
         : 
-            <CourseDetails state={state} data={props.data}/>
+            <CourseDetails state={state} assignments={props.assignments} data={props.data}/>
         }
         </>
     )
@@ -127,7 +128,7 @@ const CourseEdit = (props) => {
                     </div>
                     <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200">
                         <h1 className="text-center md:text-left px-5 py-4 text-xl font-bold text-primary-600"> Assignments: {props.data.assignments.length}</h1>
-                        {props.data.assignments.map((item, index) => ( 
+                        {props.assignments.map((item, index) => ( 
                             <AssignmentCard key={index} data={item} />
                         ))}
                         <div className="text-center mx-auto">
@@ -170,7 +171,7 @@ const CourseDetails = (props) => {
                     </div>
                     <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200">
                         <h1 className="text-center md:text-left px-5 py-4 text-xl font-bold text-primary-600"> Assignments: {props.data.assignments.length}</h1>
-                        {props.data.assignments.map((item, index) => ( 
+                        {props.assignments.map((item, index) => ( 
                             <AssignmentCard key={index} data={item} />
                         ))}
                     </div>
