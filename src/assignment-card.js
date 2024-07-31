@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import PercentageBar from './percentage-bar'
+import { v4 as uuidv4 } from 'uuid'
 
-const CourseCard = (props) => {
+const AssignmentCard = (props) => {
     const [state, setState] = useState({
         open: props.data.draft,
         edit: props.data.draft,
@@ -17,7 +18,7 @@ const CourseCard = (props) => {
         }
     }, [props.data.draft])
 
-    const code = useRef(null)
+    const name = useRef(null)
 
     const setLocalState = (open, edit, playAnim) => {
         setState({
@@ -27,9 +28,9 @@ const CourseCard = (props) => {
         })
     }
 
-    const deleteCourse = () => {
-        if (window.confirm('Are you sure you want to delete this course')) {
-            props.DeleteCourse(props.data.id, true)
+    const deleteAssignment = () => {
+        if (window.confirm('Are you sure you want to delete this assignment')) {
+            props.DeleteAssignment(props.data.id)
         }
     }
     const toggleDropDown = () => {
@@ -38,20 +39,21 @@ const CourseCard = (props) => {
     const edit = () => {
         setLocalState(true, true, !state.open)
     }
-    const Save = (name, description) => {
-        let updatedCourse = { ...props.data }
-        updatedCourse.name = name.current.innerText
-        updatedCourse.code = code.current.innerText
-        updatedCourse.description = description.current.innerText
-        updatedCourse.draft = false
+    const Save = (type, description, courseId) => {
+        let updatedAssignment = { ...props.data }
+        updatedAssignment.name = name.current.innerText
+        updatedAssignment.type = type.current.innerText
+        updatedAssignment.description = description.current.innerText
+        updatedAssignment.courseId = courseId
+        updatedAssignment.draft = false
 
-        props.UpdateCourse(updatedCourse)
+        props.UpdateAssignment(updatedAssignment)
         setLocalState(false, false, true)
     }
 
     const Cancel = () => {
         if (props.data.draft) {
-            props.DeleteCourse(props.data.id)
+            props.DeleteAssignment(props.data.id)
         }
         setLocalState(false, false, true)
     }
@@ -63,12 +65,12 @@ const CourseCard = (props) => {
             >
                 {state.edit ? (
                     <h1
-                        ref={code}
+                        ref={name}
                         suppressContentEditableWarning={true}
                         contentEditable="plaintext-only"
-                        className="empty:before:content-['Enter_code_here...'] focus:outline-none empty:before:text-accent-600/75 py-1 text-xl"
+                        className="empty:before:content-['Enter_name_here...'] focus:outline-none empty:before:text-accent-600/75 py-1 text-xl"
                     >
-                        {props.data.code}
+                        {props.data.name}
                     </h1>
                 ) : (
                     <>
@@ -76,7 +78,7 @@ const CourseCard = (props) => {
                             className="text-xl"
                             onClick={() => toggleDropDown()}
                         >
-                            {props.data.code}
+                            {props.data.name}
                         </button>
                         <div>
                             <button
@@ -86,7 +88,7 @@ const CourseCard = (props) => {
                                 <a> Edit </a>
                             </button>
                             <button
-                                onClick={() => deleteCourse()}
+                                onClick={() => deleteAssignment()}
                                 className="mx-4 px-4 py-1 bg-red-600 rounded-md text-lg font-bold text-white hover:bg-red-400 inline"
                             >
                                 <a> Delete </a>
@@ -96,7 +98,7 @@ const CourseCard = (props) => {
                 )}
             </div>
             {state.edit ? (
-                <CourseEdit
+                <AssignmentEdit
                     Cancel={Cancel}
                     Save={Save}
                     state={state}
@@ -104,7 +106,7 @@ const CourseCard = (props) => {
                     data={props.data}
                 />
             ) : (
-                <CourseDetails
+                <AssignmentDetails
                     state={state}
                     assignments={props.assignments}
                     data={props.data}
@@ -114,7 +116,7 @@ const CourseCard = (props) => {
     )
 }
 
-const CourseEdit = (props) => {
+const AssignmentEdit = (props) => {
     let animation = ''
     if (props.state.playAnim) {
         animation = props.state.open ? 'animate-slidedown' : 'animate-slideup'
@@ -122,10 +124,49 @@ const CourseEdit = (props) => {
         animation = props.state.open ? '' : 'hidden'
     }
 
-    const name = useRef(null)
-    const description = useRef(null)
+    const [tasks, setTasks] = useState(props.data.tasks)
+    const [completion, setCompletion] = useState(props.data.completion)
 
-    const AddAssignment = () => {}
+    const type = useRef(null)
+    const description = useRef(null)
+    const taskInput = useRef(null)
+
+    useEffect(() => {
+        updateCompletion()
+    }, [tasks])
+
+    const AddTask = () => {
+        setTasks((prev) => [
+            ...prev,
+            { id: uuidv4(), completed: false, name: taskInput.current.value },
+        ])
+        console.log(tasks)
+    }
+
+    const ToggleTask = (id) => {
+        setTasks((prev) =>
+            prev.map((item) => {
+                if (item.id === id) {
+                    let newItem = { ...item }
+                    newItem.completed = !item.completed
+                    return newItem
+                }
+                return item
+            })
+        )
+    }
+
+    const updateCompletion = () => {
+        let total = tasks
+            .map((task) => (task.completed ? 1 : 0))
+            .reduce((accum, cur) => accum + cur, 0)
+        if(total > 0) {
+            total = Math.round(total / tasks.length * 100);
+        }
+
+        setCompletion(total);
+        
+    }
 
     return (
         <div className={`${animation} grid grid-rows-0`}>
@@ -135,12 +176,12 @@ const CourseEdit = (props) => {
                 >
                     <div className="text-center p-5 md:text-left md:ml-10 md:my-5 w-full md:max-w-[45%] md:w-1/2">
                         <p
-                            ref={name}
+                            ref={type}
                             suppressContentEditableWarning={true}
                             contentEditable="plaintext-only"
-                            className="focus:outline-none empty:before:text-primary-600/60 empty:before:content-['Enter_name_here...'] p-1 bg-gray-200 rounded-md overflow-hidden inline-block max-w-[90%] w-[90%] md:text-2xl text-sm font-bold text-primary-600"
+                            className="focus:outline-none empty:before:text-primary-600/60 empty:before:content-['Enter_type_here...'] p-1 bg-gray-200 rounded-md overflow-hidden inline-block max-w-[90%] w-[90%] md:text-xl text-sm font-bold text-primary-600"
                         >
-                            {props.data.name}
+                            {props.data.type}
                         </p>
                         <p
                             ref={description}
@@ -154,29 +195,35 @@ const CourseEdit = (props) => {
                             {' '}
                             Total Completion:{' '}
                         </h1>
-                        <PercentageBar percent={props.data.completion} />
+                        <PercentageBar percent={completion} />
                     </div>
                     <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200">
-                        <h1 className="text-center md:text-left px-5 py-4 text-xl font-bold text-primary-600">
-                            {' '}
-                            Assignments: {props.data.assignments.length}
-                        </h1>
-                        {props.assignments.map((item, index) => (
-                            <AssignmentCard key={index} data={item} />
-                        ))}
-                        <div className="text-center mx-auto">
-                            <button
-                                onClick={(e) => AddAssignment(e)}
-                                className="px-4 py-1 bg-primary-600 rounded-md text-lg font-bold text-white hover:bg-primary-400 inline"
-                            >
-                                <a> Add </a>
-                            </button>
-                        </div>
+                        <ul>
+                            {tasks.map((item) => (
+                                <div key={item.id}>
+                                    <input
+                                        onClick={() => ToggleTask(item.id)}
+                                        value={item.completed}
+                                        className="inline"
+                                        type="checkbox"
+                                    />
+                                    <li
+                                        className={`inline ${item.completed ? 'line-through' : ''}`}
+                                    >
+                                        {item.name}
+                                    </li>
+                                </div>
+                            ))}
+                        </ul>
+                        <>
+                            <input ref={taskInput} placeholder="Task name..." />{' '}
+                            <button onClick={() => AddTask()}> add </button>
+                        </>
                     </div>
                 </div>
                 <div className="text-right">
                     <button
-                        onClick={() => props.Save(name, description)}
+                        onClick={() => props.Save(description)}
                         className="m-2 px-4 py-1 bg-primary-600 rounded-md text-lg font-bold text-white hover:bg-primary-400 inline"
                     >
                         <a> Save </a>
@@ -193,7 +240,7 @@ const CourseEdit = (props) => {
     )
 }
 
-const CourseDetails = (props) => {
+const AssignmentDetails = (props) => {
     let animation = ''
     if (props.state.playAnim) {
         animation = props.state.open ? 'animate-slidedown' : 'animate-slideup'
@@ -222,41 +269,11 @@ const CourseDetails = (props) => {
                         </h1>
                         <PercentageBar percent={props.data.completion} />
                     </div>
-                    <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200">
-                        <h1 className="text-center md:text-left px-5 py-4 text-xl font-bold text-primary-600">
-                            {' '}
-                            Assignments: {props.data.assignments.length}
-                        </h1>
-                        {props.assignments.map((item, index) => (
-                            <AssignmentCard key={index} data={item} />
-                        ))}
-                    </div>
+                    <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200"></div>
                 </div>
             </div>
         </div>
     )
 }
 
-const AssignmentCard = (props) => {
-    return (
-        <div className="text-center lg:text-left mb-1 px-3 pb-4 md:mb-4 md:mx-4 bg-primary-600 rounded-xl">
-            <div className="lg:flex lg:justify-between">
-                <h1 className="pt-3 pb-2 md:text-lg font-bold text-white">
-                    {' '}
-                    {props.data.name} - {props.data.type}{' '}
-                </h1>
-                <div className="mb-2 md:mb-0">
-                    <button className="px-4 mx-2 my-1 md:my-3 bg-white rounded-md md:text-lg font-bold text-primary-600 hover:bg-gray-200 inline">
-                        <a> More </a>
-                    </button>
-                    <button className="px-4 mx-2 my-1 md:my-3 bg-red-600 rounded-md md:text-lg font-bold text-white hover:bg-red-400 inline">
-                        <a> Delete </a>
-                    </button>
-                </div>
-            </div>
-            <PercentageBar percent={props.data.completion} />
-        </div>
-    )
-}
-
-export default CourseCard
+export default AssignmentCard

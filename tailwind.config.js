@@ -41,12 +41,21 @@ module.exports = {
                         opacity: "0",
                         display: "none"
                     }
+                },
+                'percent-slide': {
+                    "0%": {
+                        "clip-path": "polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%)"
+                    },
+                    "100%": {
+                        "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%)"
+                    }
                 }
             },
             animation: {
                 "dropdown": "dropdown 0.25s ease-in-out",
                 "slidedown": "slidedown 0.25s ease-in-out",
-                "slideup": "slideup 0.25s ease-in-out forwards"
+                "slideup": "slideup 0.25s ease-in-out forwards",
+                "percent-slide": "percent-slide 3s"
             },
             colors: {
                 'gray': {

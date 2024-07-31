@@ -76,7 +76,7 @@ const CourseDisplay = (props) => {
                         DeleteCourse={DeleteCourse}
                         UpdateCourse={UpdateCourse}
                         assignments={props.assignments.filter(
-                            (assignment) => assignment.courseId == item.id
+                            (assignment) => assignment.courseId === item.id
                         )}
                         data={item}
                     />
