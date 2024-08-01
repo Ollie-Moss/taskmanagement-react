@@ -57,6 +57,7 @@ const AssignmentDisplay = (props) => {
             <Section
                 key={'draft assignments'}
                 title={'Unsaved'}
+                courses={props.courses}
                 assignments={drafts}
                 UpdateAssignment={UpdateAssignment}
                 DeleteAssignment={DeleteAssignment}
@@ -66,6 +67,7 @@ const AssignmentDisplay = (props) => {
                 <Section
                     key={item.id}
                     title={item.name}
+                    courses={props.courses}
                     assignments={props.assignments.filter(
                         (assignment) => assignment.courseId === item.id
                     )}
@@ -87,6 +89,7 @@ const Section = (props) => {
                     </h1>
                     {props.assignments.map((item) => (
                         <AssignmentCard
+                            courses={props.courses}
                             UpdateAssignment={props.UpdateAssignment}
                             DeleteAssignment={props.DeleteAssignment}
                             key={item.id}

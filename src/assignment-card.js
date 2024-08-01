@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import PercentageBar from './percentage-bar'
 import { v4 as uuidv4 } from 'uuid'
+import userEvent from '@testing-library/user-event'
 
 const AssignmentCard = (props) => {
     const [state, setState] = useState({
@@ -39,12 +40,14 @@ const AssignmentCard = (props) => {
     const edit = () => {
         setLocalState(true, true, !state.open)
     }
-    const Save = (type, description, courseId) => {
+    const Save = (courseId, type, description, tasks, completion) => {
         let updatedAssignment = { ...props.data }
         updatedAssignment.name = name.current.innerText
         updatedAssignment.type = type.current.innerText
         updatedAssignment.description = description.current.innerText
+        updatedAssignment.tasks = tasks
         updatedAssignment.courseId = courseId
+        updatedAssignment.completion = completion 
         updatedAssignment.draft = false
 
         props.UpdateAssignment(updatedAssignment)
@@ -102,15 +105,11 @@ const AssignmentCard = (props) => {
                     Cancel={Cancel}
                     Save={Save}
                     state={state}
-                    assignments={props.assignments}
                     data={props.data}
+                    courses={props.courses}
                 />
             ) : (
-                <AssignmentDetails
-                    state={state}
-                    assignments={props.assignments}
-                    data={props.data}
-                />
+                <AssignmentDetails state={state} data={props.data} />
             )}
         </>
     )
@@ -130,6 +129,7 @@ const AssignmentEdit = (props) => {
     const type = useRef(null)
     const description = useRef(null)
     const taskInput = useRef(null)
+    const courseId = useRef(null)
 
     useEffect(() => {
         updateCompletion()
@@ -141,6 +141,10 @@ const AssignmentEdit = (props) => {
             { id: uuidv4(), completed: false, name: taskInput.current.value },
         ])
         console.log(tasks)
+    }
+
+    const RemoveTask = (id) => {
+        setTasks((prev) => prev.filter((task) => task.id != id))
     }
 
     const ToggleTask = (id) => {
@@ -160,12 +164,11 @@ const AssignmentEdit = (props) => {
         let total = tasks
             .map((task) => (task.completed ? 1 : 0))
             .reduce((accum, cur) => accum + cur, 0)
-        if(total > 0) {
-            total = Math.round(total / tasks.length * 100);
+        if (total > 0) {
+            total = Math.round((total / tasks.length) * 100)
         }
 
-        setCompletion(total);
-        
+        setCompletion(total)
     }
 
     return (
@@ -191,9 +194,16 @@ const AssignmentEdit = (props) => {
                         >
                             {props.data.description}
                         </p>
+                        <label htmlFor="course-select"> Course: </label>
+                        <select ref={courseId} id="course-select">
+                            {props.courses.map((course) => (
+                                <option key={course.id} value={course.id}>
+                                    {course.name}
+                                </option>
+                            ))}
+                        </select>
                         <h1 className="pt-3 pb-2 text-xl font-bold text-primary-600">
-                            {' '}
-                            Total Completion:{' '}
+                            Total Completion:
                         </h1>
                         <PercentageBar percent={completion} />
                     </div>
@@ -203,7 +213,7 @@ const AssignmentEdit = (props) => {
                                 <div key={item.id}>
                                     <input
                                         onClick={() => ToggleTask(item.id)}
-                                        value={item.completed}
+                                        defaultChecked={item.completed}
                                         className="inline"
                                         type="checkbox"
                                     />
@@ -212,18 +222,40 @@ const AssignmentEdit = (props) => {
                                     >
                                         {item.name}
                                     </li>
+                                    <button onClick={() => RemoveTask(item.id)}>
+                                        {' '}
+                                        Remove{' '}
+                                    </button>
                                 </div>
                             ))}
                         </ul>
                         <>
-                            <input ref={taskInput} placeholder="Task name..." />{' '}
-                            <button onClick={() => AddTask()}> add </button>
+                            <input
+                                onKeyDown={(e) => {
+                                    if (e.key == 'Enter') {
+                                        AddTask()
+                                    }
+                                }}
+                                ref={taskInput}
+                                placeholder="Task name..."
+                            />
+                            <button onClick={() => AddTask()}>add</button>
                         </>
                     </div>
                 </div>
                 <div className="text-right">
                     <button
-                        onClick={() => props.Save(description)}
+                        onClick={() => {
+                            props.Save(
+                                courseId.current.options[
+                                    courseId.current.selectedIndex
+                                ].value,
+                                type,
+                                description,
+                                tasks,
+                                completion
+                            )
+                        }}
                         className="m-2 px-4 py-1 bg-primary-600 rounded-md text-lg font-bold text-white hover:bg-primary-400 inline"
                     >
                         <a> Save </a>

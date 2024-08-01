@@ -159,7 +159,7 @@ const CourseEdit = (props) => {
                     <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200">
                         <h1 className="text-center md:text-left px-5 py-4 text-xl font-bold text-primary-600">
                             {' '}
-                            Assignments: {props.data.assignments.length}
+                            Assignments: {props.assignments.length}
                         </h1>
                         {props.assignments.map((item, index) => (
                             <AssignmentCard key={index} data={item} />
@@ -225,7 +225,7 @@ const CourseDetails = (props) => {
                     <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200">
                         <h1 className="text-center md:text-left px-5 py-4 text-xl font-bold text-primary-600">
                             {' '}
-                            Assignments: {props.data.assignments.length}
+                            Assignments: {props.assignments.length}
                         </h1>
                         {props.assignments.map((item, index) => (
                             <AssignmentCard key={index} data={item} />
