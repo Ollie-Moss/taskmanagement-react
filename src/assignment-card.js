@@ -47,16 +47,17 @@ const AssignmentCard = (props) => {
         updatedAssignment.description = description.current.innerText
         updatedAssignment.tasks = tasks
         updatedAssignment.courseId = courseId
-        updatedAssignment.completion = completion 
+        updatedAssignment.completion = completion
         updatedAssignment.draft = false
 
+        props.DeleteAssignment(props.data.id, true)
         props.UpdateAssignment(updatedAssignment)
         setLocalState(false, false, true)
     }
 
     const Cancel = () => {
         if (props.data.draft) {
-            props.DeleteAssignment(props.data.id)
+            props.DeleteAssignment(props.data.id, true)
         }
         setLocalState(false, false, true)
     }
@@ -109,7 +110,7 @@ const AssignmentCard = (props) => {
                     courses={props.courses}
                 />
             ) : (
-                <AssignmentDetails state={state} data={props.data} />
+                <AssignmentDetails UpdateAssignment={props.UpdateAssignment} state={state} data={props.data} />
             )}
         </>
     )
@@ -208,27 +209,12 @@ const AssignmentEdit = (props) => {
                         <PercentageBar percent={completion} />
                     </div>
                     <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200">
-                        <ul>
-                            {tasks.map((item) => (
-                                <div key={item.id}>
-                                    <input
-                                        onClick={() => ToggleTask(item.id)}
-                                        defaultChecked={item.completed}
-                                        className="inline"
-                                        type="checkbox"
-                                    />
-                                    <li
-                                        className={`inline ${item.completed ? 'line-through' : ''}`}
-                                    >
-                                        {item.name}
-                                    </li>
-                                    <button onClick={() => RemoveTask(item.id)}>
-                                        {' '}
-                                        Remove{' '}
-                                    </button>
-                                </div>
-                            ))}
-                        </ul>
+                        <TaskView
+                            AddTask={AddTask}
+                            RemoveTask={RemoveTask}
+                            ToggleTask={ToggleTask}
+                            tasks={tasks}
+                        />
                         <>
                             <input
                                 onKeyDown={(e) => {
@@ -280,6 +266,59 @@ const AssignmentDetails = (props) => {
         animation = props.state.open ? '' : 'hidden'
     }
 
+
+    const [tasks, setTasks] = useState(props.data.tasks)
+    const [completion, setCompletion] = useState(props.data.completion)
+
+    const taskInput = useRef(null)
+
+    useEffect(() => {
+        updateCompletion()
+    }, [tasks])
+
+    useEffect(() => {
+        let newAssignment = {...props.data}
+        newAssignment.completion = completion;
+        newAssignment.tasks = tasks;
+        props.UpdateAssignment(newAssignment);
+    }, [tasks, completion])
+
+    const AddTask = () => {
+        setTasks((prev) => [
+            ...prev,
+            { id: uuidv4(), completed: false, name: taskInput.current.value },
+        ])
+        console.log(tasks)
+    }
+
+    const RemoveTask = (id) => {
+        setTasks((prev) => prev.filter((task) => task.id != id))
+    }
+
+    const ToggleTask = (id) => {
+        setTasks((prev) =>
+            prev.map((item) => {
+                if (item.id === id) {
+                    let newItem = { ...item }
+                    newItem.completed = !item.completed
+                    return newItem
+                }
+                return item
+            })
+        )
+    }
+
+    const updateCompletion = () => {
+        let total = tasks
+            .map((task) => (task.completed ? 1 : 0))
+            .reduce((accum, cur) => accum + cur, 0)
+        if (total > 0) {
+            total = Math.round((total / tasks.length) * 100)
+        }
+
+        setCompletion(total)
+    }
+
     return (
         <div className={`${animation} grid grid-rows-0`}>
             <div className="overflow-hidden">
@@ -301,10 +340,54 @@ const AssignmentDetails = (props) => {
                         </h1>
                         <PercentageBar percent={props.data.completion} />
                     </div>
-                    <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200"></div>
+                    <div className="rounded-lg pb-2 px-10 md:px-0 md:mr-10 md:my-5 w-full md:max-w-[45%] md:w-1/2 bg-gray-200">
+                        <TaskView
+                            AddTask={AddTask}
+                            RemoveTask={RemoveTask}
+                            ToggleTask={ToggleTask}
+                            tasks={tasks}
+                        />
+                        <>
+                            <input
+                                onKeyDown={(e) => {
+                                    if (e.key == 'Enter') {
+                                        AddTask()
+                                    }
+                                }}
+                                ref={taskInput}
+                                placeholder="Task name..."
+                            />
+                            <button onClick={() => AddTask()}>add</button>
+                        </>
+                    </div>
                 </div>
             </div>
         </div>
+    )
+}
+
+const TaskView = (props) => {
+    return (
+        <ul>
+            {props.tasks.map((item) => (
+                <div key={item.id}>
+                    <input
+                        onClick={() => props.ToggleTask(item.id)}
+                        defaultChecked={item.completed}
+                        className="inline"
+                        type="checkbox"
+                    />
+                    <li
+                        className={`inline ${item.completed ? 'line-through' : ''}`}
+                    >
+                        {item.name}
+                    </li>
+                    <button onClick={() => props.RemoveTask(item.id)}>
+                        Remove
+                    </button>
+                </div>
+            ))}
+        </ul>
     )
 }
 

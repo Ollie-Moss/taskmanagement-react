@@ -7,7 +7,11 @@ import { useState } from 'react'
 const AssignmentDisplay = (props) => {
     const [drafts, setDrafts] = useState([])
 
-    const DeleteAssignment = async (id) => {
+    const DeleteAssignment = async (id, draft = false) => {
+        if(draft){
+            setDrafts(prev => prev.filter((assign) => assign.id != id))
+            return;
+        }
         return deleteDoc(
             doc(firestore, `/users/${auth.currentUser.uid}/assignments`, id)
         ).catch((error) => {

@@ -42,20 +42,19 @@ module.exports = {
                         display: "none"
                     }
                 },
-                'percent-slide': {
+                'percent-slide-old': {
                     "0%": {
-                        "clip-path": "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%, 0% 0%)"
+                        "clip-path": "ellipse(var(--o, 0%)  500% at 0% 50%);"
                     },
                     "100%": {
-                        "clip-path": "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%)"
+                        "clip-path": "ellipse(var(--w, 100%) 500% at 0% 50%);"
                     }
                 }
             },
             animation: {
                 "dropdown": "dropdown 0.25s ease-in-out",
                 "slidedown": "slidedown 0.25s ease-in-out",
-                "slideup": "slideup 0.25s ease-in-out forwards",
-                "percent-slide": "percent-slide 3s"
+                "slideup": "slideup 0.25s ease-in-out forwards"
             },
             colors: {
                 'gray': {
