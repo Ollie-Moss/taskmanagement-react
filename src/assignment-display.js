@@ -8,31 +8,9 @@ const AssignmentDisplay = (props) => {
     const [drafts, setDrafts] = useState([])
 
     const DeleteAssignment = async (id, draft = false) => {
-        if(draft){
-            setDrafts(prev => prev.filter((assign) => assign.id != id))
-            return;
-        }
-        return deleteDoc(
-            doc(firestore, `/users/${auth.currentUser.uid}/assignments`, id)
-        ).catch((error) => {
-            console.log(error)
-        })
+        setDrafts(prev => prev.filter((assign) => assign.id != id))
     }
 
-    const UpdateAssignment = async (newValue) => {
-        try {
-            await setDoc(
-                doc(
-                    firestore,
-                    `/users/${props.user.uid}/assignments/`,
-                    newValue.id
-                ),
-                newValue
-            ).then((result) => {})
-        } catch (error) {
-            console.log(error)
-        }
-    }
     const AddAssignment = async () => {
         const docData = {
             id: uuidv4(),
@@ -63,7 +41,6 @@ const AssignmentDisplay = (props) => {
                 title={'Unsaved'}
                 courses={props.courses}
                 assignments={drafts}
-                UpdateAssignment={UpdateAssignment}
                 DeleteAssignment={DeleteAssignment}
             />
 
@@ -75,7 +52,6 @@ const AssignmentDisplay = (props) => {
                     assignments={props.assignments.filter(
                         (assignment) => assignment.courseId === item.id
                     )}
-                    UpdateAssignment={UpdateAssignment}
                     DeleteAssignment={DeleteAssignment}
                 />
             ))}
@@ -94,7 +70,6 @@ const Section = (props) => {
                     {props.assignments.map((item) => (
                         <AssignmentCard
                             courses={props.courses}
-                            UpdateAssignment={props.UpdateAssignment}
                             DeleteAssignment={props.DeleteAssignment}
                             key={item.id}
                             data={item}

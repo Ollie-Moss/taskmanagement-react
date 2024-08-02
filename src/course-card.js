@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import PercentageBar from './percentage-bar'
+import { UpdateCourse } from './services/updateCourse'
+import { DeleteCourse } from './services/deleteCourse'
+import { useNavigate } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid'
+import { UpdateAssignment } from './services/updateAssignment'
 
 const CourseCard = (props) => {
     const [state, setState] = useState({
@@ -29,7 +34,7 @@ const CourseCard = (props) => {
 
     const deleteCourse = () => {
         if (window.confirm('Are you sure you want to delete this course')) {
-            props.DeleteCourse(props.data.id, true)
+            DeleteCourse(props.data.id, true)
         }
     }
     const toggleDropDown = () => {
@@ -44,14 +49,20 @@ const CourseCard = (props) => {
         updatedCourse.code = code.current.innerText
         updatedCourse.description = description.current.innerText
         updatedCourse.draft = false
+        if (props.assignments.length > 0) {
+            updatedCourse.completion = props.assignments.reduce(
+                (acuum, assignment) => acuum + assignment.completion,
+                0
+            )
+        }
 
-        props.UpdateCourse(updatedCourse)
+        UpdateCourse(updatedCourse)
         setLocalState(false, false, true)
     }
 
     const Cancel = () => {
         if (props.data.draft) {
-            props.DeleteCourse(props.data.id)
+            DeleteCourse(props.data.id)
         }
         setLocalState(false, false, true)
     }
@@ -115,6 +126,7 @@ const CourseCard = (props) => {
 }
 
 const CourseEdit = (props) => {
+    const navigate = useNavigate()
     let animation = ''
     if (props.state.playAnim) {
         animation = props.state.open ? 'animate-slidedown' : 'animate-slideup'
@@ -125,7 +137,20 @@ const CourseEdit = (props) => {
     const name = useRef(null)
     const description = useRef(null)
 
-    const AddAssignment = () => {}
+    const AddAssignment = () => {
+        props.Save(name, description)
+        const docData = {
+            id: uuidv4(),
+            courseId: props.data.id,
+            name: '',
+            description: '',
+            tasks: [],
+            completion: 0,
+            draft: true,
+        }
+        UpdateAssignment(docData)
+        navigate('/assignments', { replace: true })
+    }
 
     return (
         <div className={`${animation} grid grid-rows-0`}>
@@ -166,7 +191,7 @@ const CourseEdit = (props) => {
                         ))}
                         <div className="text-center mx-auto">
                             <button
-                                onClick={(e) => AddAssignment(e)}
+                                onClick={AddAssignment}
                                 className="px-4 py-1 bg-primary-600 rounded-md text-lg font-bold text-white hover:bg-primary-400 inline"
                             >
                                 <a> Add </a>

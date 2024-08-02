@@ -8,7 +8,6 @@ const PercentageBar = (props) => {
         let direction = oldPercent.current < props.percent ? 'normal' : 'reverse';
         slider.current.style.animation = `percent-slide 0.5s ease-in normal both`
 
-        console.log('old: ', oldPercent.current, 'new: ', props.percent)
         slider.current.style.setProperty('--w', `${props.percent}%`)
         slider.current.style.setProperty('--o', `${oldPercent.current}%`)
         oldPercent.current = props.percent

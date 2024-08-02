@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import PercentageBar from './percentage-bar'
 import { v4 as uuidv4 } from 'uuid'
-import userEvent from '@testing-library/user-event'
+import { UpdateAssignment } from './services/updateAssignment'
+import { DeleteAssignment } from './services/deleteAssignment'
 
 const AssignmentCard = (props) => {
     const [state, setState] = useState({
@@ -31,7 +32,7 @@ const AssignmentCard = (props) => {
 
     const deleteAssignment = () => {
         if (window.confirm('Are you sure you want to delete this assignment')) {
-            props.DeleteAssignment(props.data.id)
+            DeleteAssignment(props.data.id)
         }
     }
     const toggleDropDown = () => {
@@ -50,14 +51,16 @@ const AssignmentCard = (props) => {
         updatedAssignment.completion = completion
         updatedAssignment.draft = false
 
-        props.DeleteAssignment(props.data.id, true)
-        props.UpdateAssignment(updatedAssignment)
+        if (props.data.draft) {
+            props.DeleteAssignment(props.data.id)
+        }
+        UpdateAssignment(updatedAssignment)
         setLocalState(false, false, true)
     }
 
     const Cancel = () => {
         if (props.data.draft) {
-            props.DeleteAssignment(props.data.id, true)
+            props.DeleteAssignment(props.data.id)
         }
         setLocalState(false, false, true)
     }
@@ -110,7 +113,7 @@ const AssignmentCard = (props) => {
                     courses={props.courses}
                 />
             ) : (
-                <AssignmentDetails UpdateAssignment={props.UpdateAssignment} state={state} data={props.data} />
+                <AssignmentDetails state={state} data={props.data} />
             )}
         </>
     )
@@ -266,36 +269,35 @@ const AssignmentDetails = (props) => {
         animation = props.state.open ? '' : 'hidden'
     }
 
-
     const [tasks, setTasks] = useState(props.data.tasks)
     const [completion, setCompletion] = useState(props.data.completion)
 
     const taskInput = useRef(null)
 
-    useEffect(() => {
-        updateCompletion()
-    }, [tasks])
-
-    useEffect(() => {
-        let newAssignment = {...props.data}
-        newAssignment.completion = completion;
-        newAssignment.tasks = tasks;
-        props.UpdateAssignment(newAssignment);
-    }, [tasks, completion])
+    const UpdateTasks = () => {
+        let newAssignment = { ...props.data }
+        newAssignment.completion = completion
+        newAssignment.tasks = tasks
+        UpdateAssignment(newAssignment)
+        console.log(newAssignment)
+    }
 
     const AddTask = () => {
         setTasks((prev) => [
             ...prev,
             { id: uuidv4(), completed: false, name: taskInput.current.value },
         ])
-        console.log(tasks)
+        updateCompletion()
+        UpdateTasks()
     }
 
     const RemoveTask = (id) => {
         setTasks((prev) => prev.filter((task) => task.id != id))
+        updateCompletion()
+        UpdateTasks()
     }
 
-    const ToggleTask = (id) => {
+    const ToggleTask = async (id) => {
         setTasks((prev) =>
             prev.map((item) => {
                 if (item.id === id) {
@@ -317,6 +319,7 @@ const AssignmentDetails = (props) => {
         }
 
         setCompletion(total)
+        return total
     }
 
     return (
@@ -328,10 +331,9 @@ const AssignmentDetails = (props) => {
                     <div className="text-center p-5 md:text-left md:ml-10 md:my-5 w-full md:max-w-[45%] md:w-1/2">
                         <h1 className="py-2 md:text-2xl font-bold text-primary-600">
                             {' '}
-                            {props.data.name}{' '}
+                            {props.data.type}{' '}
                         </h1>
                         <p className="text-sm font-medium text-primary-600">
-                            {' '}
                             {props.data.description}{' '}
                         </p>
                         <h1 className="pt-3 pb-2 text-xl font-bold text-primary-600">

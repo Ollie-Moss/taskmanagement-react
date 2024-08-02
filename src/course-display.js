@@ -29,30 +29,7 @@ const CourseDisplay = (props) => {
             console.log(error)
         }
     }
-    const DeleteCourse = (id) => {
-        deleteDoc(doc(firestore, `/users/${auth.currentUser.uid}/courses`, id))
-            .then((result) => {
-                console.log(result)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
 
-    const UpdateCourse = async (newValue) => {
-        try {
-            await setDoc(
-                doc(
-                    firestore,
-                    `/users/${props.user.uid}/courses/`,
-                    newValue.id
-                ),
-                newValue
-            ).then((result) => {})
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     return (
         <>
@@ -73,8 +50,6 @@ const CourseDisplay = (props) => {
                 {props.courses.map((item) => (
                     <CourseCard
                         key={item.id}
-                        DeleteCourse={DeleteCourse}
-                        UpdateCourse={UpdateCourse}
                         assignments={props.assignments.filter(
                             (assignment) => assignment.courseId === item.id
                         )}
